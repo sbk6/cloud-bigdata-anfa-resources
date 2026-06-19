@@ -1,6 +1,6 @@
 # Rendu Séance 1
 
-**Nom et prénom :** BIKOZI Balakibawi Sylvain 
+**Nom et prénom :** BIKOZI Balakibawi Sylvain. 
 **Identifiant GitHub :** sbk6
 
 ---
