@@ -1,0 +1,39 @@
+# Environnements virtuels Python
+.venv/
+venv/
+env/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Secrets et credentials
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# Logs
+*.log
+logs/
+
+# Données locales (montées via volumes, inutiles dans l'image)
+captures/
+notebooks/
+
+# macOS
+.DS_Store
+._*
+
+# Git
+.git/
+.gitignore

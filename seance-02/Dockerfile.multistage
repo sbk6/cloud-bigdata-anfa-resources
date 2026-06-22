@@ -1,0 +1,42 @@
+# ──────────────────────────────────────────────────────────────
+# Dockerfile multi-stage : construction en deux temps
+# ──────────────────────────────────────────────────────────────
+
+# ─── Étape 1 : builder ────────────────────────────────────────
+# Image complète avec les outils nécessaires à l'installation
+FROM python:3.11 AS builder
+
+WORKDIR /build
+COPY requirements.txt .
+# --user : installe les packages dans /root/.local plutôt qu'en système
+# On pourra copier ce dossier dans l'étape suivante.
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+
+# ─── Étape 2 : runtime ────────────────────────────────────────
+# Image finale légère
+FROM python:3.11-slim-bookworm
+
+# Java reste nécessaire pour Spark.
+# Lien symbolique /usr/local/java pour neutraliser la différence
+# de chemin entre amd64 (/usr/lib/jvm/java-17-openjdk-amd64)
+# et arm64 (/usr/lib/jvm/java-17-openjdk-arm64).
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
+    rm -rf /var/lib/apt/lists/* && \
+    ln -s "$(dirname $(dirname $(readlink -f /usr/bin/java)))" /usr/local/java
+
+ENV JAVA_HOME=/usr/local/java
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# COPY --from=builder : copie depuis l'étape précédente
+COPY --from=builder /root/.local /root/.local
+# Ajouter le dossier des binaires Python au PATH
+ENV PATH=/root/.local/bin:$PATH
+
+COPY . .
+
+CMD ["python", "analyse_referentiel.py"]

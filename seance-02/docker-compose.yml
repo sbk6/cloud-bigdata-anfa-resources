@@ -1,0 +1,84 @@
+# docker-compose.yml - Stack Anfa pour la séance 2
+# 3 services : MinIO (stockage S3) + Jupyter (exploration) + anfa-app (analyse PySpark)
+services:
+
+  # ──────────────────────────────────────────────────────────
+  # 1. MinIO : stockage objet compatible S3 (réutilisé séance 1)
+  # ──────────────────────────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: anfa-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"   # API S3
+      - "9001:9001"   # Console web
+    environment:
+      MINIO_ROOT_USER: anfa-admin
+      MINIO_ROOT_PASSWORD: anfa-password-2026
+    volumes:
+      - anfa-minio-data:/data
+    command: server /data --console-address ":9001"
+    # healthcheck : Docker vérifie périodiquement que MinIO répond.
+    # Tant que ce check ne passe pas, le service est marqué "unhealthy".
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # ──────────────────────────────────────────────────────────
+  # 2. Jupyter : notebook pour explorer les données MinIO
+  # ──────────────────────────────────────────────────────────
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: anfa-jupyter
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    environment:
+      JUPYTER_TOKEN: anfa-token
+    volumes:
+      # Bind mount : nos notebooks vivent sur l'hôte ET dans le conteneur.
+      # On peut les éditer dans le conteneur ; ils sont versionnés via Git sur l'hôte.
+      - ./notebooks:/home/jovyan/work
+      # Captures : le notebook sauvegarde les graphiques directement sur l'hôte.
+      - ./captures:/home/jovyan/captures
+    # depends_on avec condition : Jupyter attend que MinIO soit "healthy"
+    # avant de démarrer. Sans cela, Jupyter pourrait être prêt avant MinIO.
+    depends_on:
+      minio:
+        condition: service_healthy
+    command: >
+      start-notebook.sh
+      --NotebookApp.token='anfa-token'
+      --NotebookApp.notebook_dir='/home/jovyan/work'
+
+
+  # ──────────────────────────────────────────────────────────
+  # 3. anfa-app : notre image custom (script PySpark d'analyse)
+  # ──────────────────────────────────────────────────────────
+  anfa-app:
+    # "build" : construit l'image à partir du Dockerfile local
+    # au lieu de la tirer d'un registre.
+    build:
+      context: .             # contexte de build : le dossier courant
+      dockerfile: Dockerfile # nom du Dockerfile (par défaut "Dockerfile")
+    image: anfa-analyse:v1   # tag local de l'image construite
+    container_name: anfa-app
+    # restart "no" : ce conteneur est jetable (exécute le script puis s'arrête)
+    restart: "no"
+    volumes:
+      # On monte le référentiel CSV en lecture seule
+      - ../data/referentiel:/data/referentiel:ro
+
+# ──────────────────────────────────────────────────────────────
+# Volumes
+# ──────────────────────────────────────────────────────────────
+volumes:
+  # Volume externe créé en séance 1 — contient déjà les 4 CSV uploadés.
+  # "external: true" indique à Compose de NE PAS recréer ce volume ;
+  # il doit exister au préalable (créé par "docker volume create anfa-minio-data").
+  anfa-minio-data:
+    external: true
+    name: anfa-minio-data
