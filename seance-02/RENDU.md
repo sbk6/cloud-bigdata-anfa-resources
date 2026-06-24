@@ -13,12 +13,12 @@ Cette séance avait pour objectif de maîtriser Docker au-delà du simple `docke
 
 ## Étapes principales
 
-1. **Script PySpark** — Écriture de `analyse_referentiel.py` qui charge les 4 CSV du référentiel Anfa en mode local (`local[*]`) et calcule des statistiques agrégées (comptages, top 3, tarif moyen par type).
-2. **Dockerfile** — Construction de l'image `anfa-analyse:v1` basée sur `python:3.11-slim-bookworm` avec installation de `openjdk-17-jre-headless` (requis par Spark). Un lien symbolique `/usr/local/java` rend `JAVA_HOME` portable entre amd64 et arm64 (Mac M1/M2).
-3. **Couche de cache** — Ajout du `.dockerignore` et observation que la couche `pip install` est réutilisée depuis le cache quand seul le script Python est modifié (séparation `COPY requirements.txt` / `RUN pip install` / `COPY . .`).
-4. **Docker Compose** — Orchestration de 3 services : `minio` (avec healthcheck), `jupyter` (depends_on minio healthy), `anfa-app` (construit depuis le Dockerfile local). Réutilisation du volume `anfa-minio-data` créé en séance 1 pour conserver les données uploadées.
-5. **Notebook Jupyter** — Création de `exploration_minio.ipynb` qui se connecte à MinIO via `http://minio:9000` (DNS Docker Compose), liste les buckets, charge `lignes.csv` dans un DataFrame pandas et génère un graphique.
-6. **Bonus** — Rédaction de `Dockerfile.multistage` : étape `builder` (installation des dépendances avec `--user`) copiée dans une image `slim` finale, réduisant ainsi la taille de l'image.
+1. **Script PySpark** : Écriture de `analyse_referentiel.py` qui charge les 4 CSV du référentiel Anfa en mode local (`local[*]`) et calcule des statistiques agrégées (comptages, top 3, tarif moyen par type).
+2. **Dockerfile** : Construction de l'image `anfa-analyse:v1` basée sur `python:3.11-slim-bookworm` avec installation de `openjdk-17-jre-headless` (requis par Spark). Un lien symbolique `/usr/local/java` rend `JAVA_HOME` portable entre amd64 et arm64 (Mac M1/M2).
+3. **Couche de cache** : Ajout du `.dockerignore` et observation que la couche `pip install` est réutilisée depuis le cache quand seul le script Python est modifié (séparation `COPY requirements.txt` / `RUN pip install` / `COPY . .`).
+4. **Docker Compose** : Orchestration de 3 services : `minio` (avec healthcheck), `jupyter` (depends_on minio healthy), `anfa-app` (construit depuis le Dockerfile local). Réutilisation du volume `anfa-minio-data` créé en séance 1 pour conserver les données uploadées.
+5. **Notebook Jupyter** : Création de `exploration_minio.ipynb` qui se connecte à MinIO via `http://minio:9000` (DNS Docker Compose), liste les buckets, charge `lignes.csv` dans un DataFrame pandas et génère un graphique.
+6. **Bonus** : Rédaction de `Dockerfile.multistage` : étape `builder` (installation des dépendances avec `--user`) copiée dans une image `slim` finale, réduisant ainsi la taille de l'image.
 
 ---
 
