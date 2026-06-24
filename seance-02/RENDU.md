@@ -319,7 +319,7 @@ Je choisirais **`on-failure`**. Le script est un job nocturne qui doit s'arrête
 
 **c. Passer la date au script — deux mécanismes :**
 
-**Mécanisme 1 — Variable d'environnement (`environment:`) :**
+**Mécanisme 1 : Variable d'environnement (`environment:`) :**
 
 ```yaml
 environment:
@@ -331,7 +331,7 @@ Le script lit `os.environ["PIPELINE_DATE"]`. Pour rejouer une date précise, on 
 docker compose run -e PIPELINE_DATE=2026-06-20 pipeline
 ```
 
-**Mécanisme 2 — Argument de commande (`command:`) :**
+**Mécanisme 2 : Argument de commande (`command:`) :**
 
 ```yaml
 command: ["python", "pipeline.py", "--date", "2026-06-24"]
