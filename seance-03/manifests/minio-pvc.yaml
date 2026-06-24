@@ -1,0 +1,16 @@
+# minio-pvc.yaml
+# ─────────────────────────────────────────────────────────────
+# Demande de stockage persistant pour MinIO.
+# Équivalent du volume nommé "anfa-minio-data" en Docker Compose.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  # ReadWriteOnce : un seul nœud à la fois en lecture/écriture (suffisant ici)
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
