@@ -34,25 +34,25 @@ Terraform installé via Homebrew sur macOS M2. Infrastructure Docker complète (
 
 ### Exercice 1 — QCM conceptuel
 
-**1.1** B — L'IaC ne remplace pas la nécessité de comprendre l'infrastructure sous-jacente : elle automatise sa description, mais le praticien doit toujours comprendre ce qu'il code.
+**1.1** B - L'IaC ne remplace pas la nécessité de comprendre l'infrastructure sous-jacente : elle automatise sa description, mais le praticien doit toujours comprendre ce qu'il code.
 
-**1.2** B — Le déclaratif décrit l'état souhaité (« je veux 3 réplicas ») ; l'impératif décrit la séquence d'actions à effectuer (« crée d'abord X, puis Y »).
+**1.2** B - Le déclaratif décrit l'état souhaité (« je veux 3 réplicas ») ; l'impératif décrit la séquence d'actions à effectuer (« crée d'abord X, puis Y »).
 
-**1.3** B — Une opération idempotente produit le même résultat quel que soit le nombre de fois où elle est appliquée : appliquer deux fois `terraform apply` sans changer le code ne modifie rien.
+**1.3** B - Une opération idempotente produit le même résultat quel que soit le nombre de fois où elle est appliquée : appliquer deux fois `terraform apply` sans changer le code ne modifie rien.
 
-**1.4** B — Un provider est un plugin qui sait communiquer avec une API spécifique (AWS, Docker, Kubernetes…) ; il traduit le HCL en appels API concrets.
+**1.4** B - Un provider est un plugin qui sait communiquer avec une API spécifique (AWS, Docker, Kubernetes…) ; il traduit le HCL en appels API concrets.
 
-**1.5** B — Terraform compare le state (état actuel) au code (état souhaité), ne voit aucun écart, et n'effectue aucune action : c'est l'idempotence.
+**1.5** B - Terraform compare le state (état actuel) au code (état souhaité), ne voit aucun écart, et n'effectue aucune action : c'est l'idempotence.
 
-**1.6** C — `terraform.tfstate` mémorise ce que Terraform a créé (IDs, configurations, secrets) pour pouvoir suivre les changements incrémentaux.
+**1.6** C - `terraform.tfstate` mémorise ce que Terraform a créé (IDs, configurations, secrets) pour pouvoir suivre les changements incrémentaux.
 
-**1.7** B — Il ne faut jamais committer `terraform.tfstate` car il peut contenir des secrets en clair (mots de passe, clés API) et peut être corrompu par des commits concurrents en équipe.
+**1.7** B - Il ne faut jamais committer `terraform.tfstate` car il peut contenir des secrets en clair (mots de passe, clés API) et peut être corrompu par des commits concurrents en équipe.
 
-**1.8** C — `terraform plan` affiche ce que Terraform compte faire sans rien changer ; c'est le réflexe à avoir avant tout `apply`.
+**1.8** C - `terraform plan` affiche ce que Terraform compte faire sans rien changer ; c'est le réflexe à avoir avant tout `apply`.
 
-**1.9** B — OpenTofu est un fork open source de Terraform créé par la Linux Foundation après le changement de licence de HashiCorp (BSL) en août 2023.
+**1.9** B - OpenTofu est un fork open source de Terraform créé par la Linux Foundation après le changement de licence de HashiCorp (BSL) en août 2023.
 
-**1.10** B — Terraform et Ansible sont complémentaires : Terraform provisionne l'infrastructure (crée les VMs, réseaux, buckets), Ansible configure les machines existantes (installe des logiciels, déploie des configs).
+**1.10** B - Terraform et Ansible sont complémentaires : Terraform provisionne l'infrastructure (crée les VMs, réseaux, buckets), Ansible configure les machines existantes (installe des logiciels, déploie des configs).
 
 ---
 
