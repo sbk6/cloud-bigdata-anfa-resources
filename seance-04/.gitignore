@@ -1,0 +1,18 @@
+# .gitignore spécifique à Terraform
+
+# Dossier interne avec les providers téléchargés
+.terraform/
+.terraform.lock.hcl
+
+# Fichiers d'état — JAMAIS dans Git
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Fichiers contenant des variables sensibles
+*.tfvars
+!*.tfvars.example
+
+# Logs de crash
+crash.log
+crash.*.log
