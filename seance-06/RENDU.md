@@ -1,8 +1,8 @@
 # Rendu : Séance 6
 
-**Nom et prénom :** Denis AKPAGNONITE
-**Identifiant GitHub :** <votre-username>
-**Date de soumission :** <JJ/MM/AAAA>
+**Nom et prénom :** BIKOZI Balakibawi Sylvain
+**Identifiant GitHub :** sbk6
+**Date de soumission :** 03/07/2026
 
 ## Résumé de la séance
 
@@ -38,9 +38,8 @@ propagation d'échec ont été observés via un bug volontaire.
 
 ## Réflexion personnelle
 
-<3-5 lignes : qu'apporte Airflow par rapport à un cron simple ?
-Dans quel cas l'utiliser sur un vrai projet ?>
+Airflow apporte une vision graphique et un contrôle fin que cron ne peut pas offrir : on voit exactement quelle tâche a échoué, quand, et pourquoi, sans fouiller des logs épars. La gestion des dépendances entre tâches (`t1 >> t2`) garantit qu'une étape ne démarre pas si la précédente a échoué, et les retries automatiques rendent le pipeline robuste sans code supplémentaire. Sur un vrai projet data (ingestion quotidienne, jobs Spark, exports), Airflow est indispensable dès qu'on a plus d'une tâche à enchaîner, car il centralise la supervision, l'historique et les alertes.
 
 ## Difficultés rencontrées
 
-<Aucune | Décrivez brièvement.>
+L'image `postgres:18-alpine` a changé son répertoire de données par rapport aux versions précédentes, ce qui provoquait une boucle de redémarrage du conteneur. Résolution : downgrade vers `postgres:16-alpine`, compatible avec le montage `/var/lib/postgresql/data` utilisé dans le Compose. Par ailleurs, le job Spark timeout lors des exécutions successives à cause de la contention des ressources — les captures de retry ont été réalisées en contournant cette contrainte.
