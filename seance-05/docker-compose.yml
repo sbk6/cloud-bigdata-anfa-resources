@@ -10,8 +10,13 @@ services:
     environment:
       MINIO_ROOT_USER: anfa-admin
       MINIO_ROOT_PASSWORD: anfa-password-2026
+      MINIO_IDENTITY_OPENID_CONFIG_URL: "http://keycloak:8080/realms/bigdata-securite/.well-known/openid-configuration"
+      MINIO_IDENTITY_OPENID_CLIENT_ID: "minio-client"
+      MINIO_IDENTITY_OPENID_CLIENT_SECRET: "minio-client-secret-2026"
+      MINIO_IDENTITY_OPENID_SCOPES: "openid"
     volumes:
       - minio-data:/data
+      - ~/certs:/root/.minio/certs:ro
     command: server /data --console-address ":9001"
 
   spark-master:
@@ -64,6 +69,17 @@ services:
       - ../data/referentiel:/opt/data/referentiel:ro
     command: >
       /opt/spark/sbin/start-worker.sh spark://spark-master:7077
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6
+    container_name: anfa-keycloak
+    command: start-dev
+    restart: unless-stopped
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin_demo_non_secure
+    ports:
+      - "8086:8080"
 
 volumes:
   minio-data:
